@@ -269,4 +269,5 @@ export const deleteAccountWithPassword = async (req, res) => {
   }
 };
 
+export default generateToken;
 
