@@ -11,24 +11,25 @@ import aiRoutes from "./routes/ai.routes.js";
 
 const app = express();
 
-/* -------------------- MIDDLEWARE -------------------- */
 app.use(
   cors({
     origin: [
       "http://localhost:3000",
       "http://localhost:5173",
-      // add vercel URL later
+      "https://edunexa-tech.vercel.app"   
     ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
+app.options("*", cors());
 app.use(express.json());
 
-/* -------------------- DB -------------------- */
+
 connectDB();
 
-/* -------------------- ROUTES -------------------- */
 app.get("/", (req, res) => {
   res.send("EduNexa API is Running...");
 });
@@ -37,7 +38,6 @@ app.use("/api/auth", authRoutes);
 app.use("/api/files", fileRoutes);
 app.use("/api/ai", aiRoutes);
 
-/* -------------------- SERVER -------------------- */
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

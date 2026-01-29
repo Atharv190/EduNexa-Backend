@@ -6,18 +6,14 @@ import { sendEmail } from "../utils/sendEmail.js";
 
 dotenv.config();
 
-/* ================= JWT ================= */
 const generateToken = (userId, role) => {
   return jwt.sign({ userId, role }, process.env.JWT_SECRET_KEY, {
     expiresIn: "30d",
   });
 };
 
-/* ================= OTP STORE (TEMP MEMORY) ================= */
-// email => { otp, expiresAt, verified }
 const otpStore = new Map();
 
-/* ================= SEND OTP ================= */
 export const sendSignupOTP = async (req, res) => {
   try {
     const { email, name } = req.body;
@@ -26,7 +22,6 @@ export const sendSignupOTP = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    // ✅ CHECK IF USER ALREADY EXISTS
     const userExists = await User.findOne({ email });
 
     if (userExists) {
@@ -36,7 +31,6 @@ export const sendSignupOTP = async (req, res) => {
       });
     }
 
-    // ✅ GENERATE OTP
     const otp = crypto.randomInt(100000, 999999).toString();
 
     otpStore.set(email, {
@@ -45,7 +39,6 @@ export const sendSignupOTP = async (req, res) => {
       verified: false,
     });
 
-    // ✅ SEND EMAIL
     await sendEmail({
   to: email,
   subject: `🔐 Verify Your Email, ${name}!`,
@@ -88,7 +81,6 @@ Happy Learning 🚀📚
 };
 
 
-/* ================= VERIFY OTP ================= */
 export const verifySignupOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -118,7 +110,6 @@ export const verifySignupOTP = async (req, res) => {
   }
 };
 
-/* ================= SIGNUP ================= */
 export const signup = async (req, res) => {
   try {
     const { username, name, email, password, role } = req.body;
@@ -166,7 +157,6 @@ export const signup = async (req, res) => {
   }
 };
 
-/* ================= LOGIN (UNCHANGED) ================= */
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -201,7 +191,6 @@ export const login = async (req, res) => {
   }
 };
 
-/* ================= GET USER ================= */
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -221,7 +210,6 @@ export const getUserById = async (req, res) => {
   }
 };
 
-/* ================= DELETE ACCOUNT WITH PASSWORD ================= */
 export const deleteAccountWithPassword = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -233,7 +221,6 @@ export const deleteAccountWithPassword = async (req, res) => {
       });
     }
 
-    // Find user with password
     const user = await User.findOne({ email }).select("+password");
 
     if (!user) {
@@ -243,7 +230,6 @@ export const deleteAccountWithPassword = async (req, res) => {
       });
     }
 
-    // Check password
     const isMatch = await user.matchPassword(password);
 
     if (!isMatch) {
@@ -253,7 +239,6 @@ export const deleteAccountWithPassword = async (req, res) => {
       });
     }
 
-    // Delete account
     await User.findOneAndDelete({ email });
 
     return res.status(200).json({

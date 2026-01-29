@@ -5,14 +5,14 @@ export const sendEmail = async ({ to, subject, text }) => {
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
-      secure: false, // TLS
+      secure: false, 
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
     });
 
-    await transporter.verify(); // keep this
+    await transporter.verify(); 
 
     const info = await transporter.sendMail({
       from: `"EduNexa Admin" <${process.env.EMAIL_USER}>`,
@@ -21,9 +21,9 @@ export const sendEmail = async ({ to, subject, text }) => {
       text,
     });
 
-    console.log("✅ Email sent:", info.response);
+    console.log("Email sent:", info.response);
   } catch (error) {
-    console.error("❌ Email error FULL:", error);
+    console.error("Email error FULL:", error);
     throw error;
   }
 };

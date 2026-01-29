@@ -134,7 +134,6 @@ export const generateQuiz = async (req, res) => {
       });
     }
 
-    // ✅ Return cached quiz if already generated
     if (file.quiz && file.quiz.length === 10) {
       return res.status(200).json({
         success: true,
@@ -198,10 +197,9 @@ JSON FORMAT:
         quizData = JSON.parse(jsonMatch[0]).quiz || [];
       }
     } catch (err) {
-      console.error("❌ Quiz parse error:", err);
+      console.error(" Quiz parse error:", err);
     }
 
-    // 🛡️ Safety: ensure max 10 questions
     quizData = quizData.slice(0, 10);
 
     file.quiz = quizData;
@@ -213,7 +211,7 @@ JSON FORMAT:
       cached: false,
     });
   } catch (err) {
-    console.error("❌ Quiz generation error:", err);
+    console.error("Quiz generation error:", err);
 
     if (err.status === 429 || err.message?.includes("Quota")) {
       return res.status(200).json({

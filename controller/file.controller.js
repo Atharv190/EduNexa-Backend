@@ -6,7 +6,6 @@ import File from "../model/file.model.js";
 import cloudinary from "../config/cloud.js";
 import streamifier from "streamifier";
 
-/* ================= UPLOAD FILE ================= */
 export const uploadFile = async (req, res) => {
   try {
     const user = req.user;
@@ -47,7 +46,6 @@ export const uploadFile = async (req, res) => {
       resource_type: resourceType,
       folder: "studygeni_files",
 
-      // 🔥 THIS IS THE FIX
       public_id: req.file.originalname.replace(/\.[^/.]+$/, ""),
       use_filename: true,
       unique_filename: false,
@@ -85,7 +83,6 @@ export const uploadFile = async (req, res) => {
   }
 };
 
-/* ================= GET MY FILES ================= */
 export const getMyFiles = async (req, res) => {
   try {
     const user = req.user;
@@ -111,7 +108,6 @@ export const getMyFiles = async (req, res) => {
   }
 };
 
-/* ================= GET ALL FILES ================= */
 export const getAllFiles = async (req, res) => {
   try {
     const files = await File.find()
@@ -132,7 +128,6 @@ export const getAllFiles = async (req, res) => {
   }
 };
 
-/* ================= GET FILE BY ID ================= */
 export const getFileById = async (req, res) => {
   try {
     const file = await File.findById(req.params.id).populate(
@@ -160,7 +155,6 @@ export const getFileById = async (req, res) => {
   }
 };
 
-/* ================= 🔥 DELETE FILE ================= */
 export const deleteFile = async (req, res) => {
   try {
     const user = req.user;
@@ -173,7 +167,6 @@ export const deleteFile = async (req, res) => {
       });
     }
 
-    /* 🔐 OWNER CHECK */
     if (
       !user ||
       user.role !== "teacher" ||
@@ -185,7 +178,6 @@ export const deleteFile = async (req, res) => {
       });
     }
 
-    /* Delete from Cloudinary */
     if (file.cloudinaryId) {
       await cloudinary.uploader.destroy(file.cloudinaryId, {
         resource_type: "raw",

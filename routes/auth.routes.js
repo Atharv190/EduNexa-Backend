@@ -11,15 +11,12 @@ import { protectRoute } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-// 🔐 EMAIL OTP FLOW
 router.post("/signup/send-otp", sendSignupOTP);
 router.post("/signup/verify-otp", verifySignupOTP);
 
-// 🔐 AUTH
 router.post("/signup", signup);
 router.post("/login", login);
 
-// 👤 USER
 router.get("/:id", protectRoute, getUserById);
 router.delete("/delete-account-password", deleteAccountWithPassword);
 
