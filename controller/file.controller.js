@@ -5,6 +5,7 @@ const pdfParse = require("pdf-parse");
 import File from "../model/file.model.js";
 import cloudinary from "../config/cloud.js";
 import streamifier from "streamifier";
+import axios from "axios";
 
 export const uploadFile = async (req, res) => {
   try {
@@ -196,5 +197,40 @@ export const deleteFile = async (req, res) => {
       success: false,
       message: "Failed to delete file",
     });
+  }
+};
+
+export const downloadFile = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const file = await File.findById(id);
+    if (!file || !file.fileUrl) {
+      return res.status(404).send("File not found");
+    }
+
+    // Fetch file from Cloudinary
+    const response = await axios.get(file.fileUrl, {
+      responseType: "stream",
+    });
+
+    // Extract filename from URL or fallback
+    const filename =
+      file.title?.replace(/\s+/g, "_") + ".pdf";
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${filename}"`
+    );
+    res.setHeader(
+      "Content-Type",
+      response.headers["content-type"]
+    );
+
+    // Pipe file stream to browser
+    response.data.pipe(res);
+  } catch (error) {
+    console.error("DOWNLOAD ERROR:", error.message);
+    res.status(500).send("Download failed");
   }
 };

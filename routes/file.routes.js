@@ -5,7 +5,8 @@ import {
   getAllFiles,
   getFileById,
   getMyFiles,
-  deleteFile
+  deleteFile,
+  downloadFile
 } from "../controller/file.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
 
@@ -35,6 +36,9 @@ router.delete(
   protectRoute,
   deleteFile
 );
+
+router.get("/download/:id", downloadFile);
+
 
 
 export default router;
