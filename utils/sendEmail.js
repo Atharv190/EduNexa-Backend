@@ -1,17 +1,25 @@
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import nodemailer from "nodemailer";
 
 export const sendEmail = async ({ to, subject, text }) => {
   try {
-    const response = await resend.emails.send({
-      from: "EduNexa <onboarding@resend.dev>",
-      to: to,
-      subject: subject,
-      text: text, // same as nodemailer text
+    const transporter = nodemailer.createTransport({
+      host: "smtp-relay.brevo.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.BREVO_USER,
+        pass: process.env.BREVO_PASS,
+      },
     });
 
-    console.log("Email sent:", response);
+    const info = await transporter.sendMail({
+      from: `"EduNexa Admin" <maratheatharv8@gmail.com>`,
+      to,
+      subject,
+      text,
+    });
+
+    console.log("Email sent:", info.messageId);
   } catch (error) {
     console.error("Email error FULL:", error);
     throw error;
