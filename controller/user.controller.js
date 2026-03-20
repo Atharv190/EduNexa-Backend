@@ -39,43 +39,70 @@ export const sendSignupOTP = async (req, res) => {
       verified: false,
     });
 
+    // ✅ Send email with proper error handling
     await sendEmail({
   to: email,
-  subject: `🔐 Verify Your Email, ${name}!`,
-  text: `🔐 EduNexa – Secure Email Verification
+  subject: `🔐 Verify Your Email - EduNexa`,
+  html: `
+    <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f8;">
+      
+      <div style="max-width: 500px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        
+        <h2 style="color: #4f46e5; text-align: center;">EduNexa Email Verification</h2>
+        
+        <p style="font-size: 15px; color: #333;">
+          Hello <b>${name}</b> 👋,
+        </p>
 
-Hello ${name} 👋✨
+        <p style="font-size: 14px; color: #555;">
+          Welcome to <b>EduNexa</b>! To complete your signup, please use the OTP below:
+        </p>
 
-To complete your signup on EduNexa, please use the One-Time Password (OTP) below.  
-This helps us keep your account safe and secure 🔒
+        <div style="text-align: center; margin: 20px 0;">
+          <span style="
+            display: inline-block;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 6px;
+            color: #111;
+            background: #eef2ff;
+            padding: 12px 20px;
+            border-radius: 8px;
+          ">
+            ${otp}
+          </span>
+        </div>
 
-━━━━━━━━━━━━━━━━━━━━━━
-🔢  VERIFICATION CODE
-👉  ${otp}
-━━━━━━━━━━━━━━━━━━━━━━
+        <p style="font-size: 13px; color: #777; text-align: center;">
+          ⏳ This OTP is valid for 5 minutes only.
+        </p>
 
-⏳ Valid for: 5 minutes only
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;" />
 
-If you didn’t request this verification, you can safely ignore this message.  
-No changes will be made to your account.
+        <p style="font-size: 12px; color: #999;">
+          If you didn’t request this, you can safely ignore this email.
+        </p>
 
-Happy Learning 🚀📚  
-— Team EduNexa || Smart Learning Platform 💙`,
+        <p style="font-size: 12px; color: #999;">
+          — Team EduNexa 🚀
+        </p>
+
+      </div>
+    </div>
+  `,
 });
-
-
-
-
 
     return res.status(200).json({
       success: true,
       message: "OTP sent to email",
     });
+
   } catch (err) {
-    console.error("Send OTP Error:", err);
+    console.error("❌ Send OTP Error:", err);
+
     return res.status(500).json({
       success: false,
-      message: "Failed to send OTP",
+      message: err.message || "Failed to send OTP",
     });
   }
 };
