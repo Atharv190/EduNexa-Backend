@@ -8,6 +8,7 @@ import {
   deleteAccountWithPassword
 } from "../controller/user.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
+import User from "../model/user.model.js";
 
 const router = express.Router();
 
@@ -19,8 +20,5 @@ router.post("/login", login);
 
 router.get("/:id", protectRoute, getUserById);
 router.delete("/delete-account-password", deleteAccountWithPassword);
-
-
-
 
 export default router;

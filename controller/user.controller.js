@@ -140,6 +140,14 @@ export const verifySignupOTP = async (req, res) => {
 export const signup = async (req, res) => {
   try {
     const { username, name, email, password, role } = req.body;
+
+const allowedRoles = ["student", "teacher"];
+
+if (!allowedRoles.includes(role)) {
+  return res.status(400).json({
+    message: "Invalid role",
+  });
+}
     const finalUsername = username || name;
 
     if (!finalUsername || !email || !password)
@@ -157,11 +165,12 @@ export const signup = async (req, res) => {
       return res.status(409).json({ message: "User already exists" });
 
     const newUser = await User.create({
-      username: finalUsername,
-      email,
-      password,
-      role,
-    });
+  username: finalUsername,
+  email,
+  password,
+  role,
+  isApproved: role === "teacher" ? false : true, // 🔥 important
+});
 
     otpStore.delete(email);
 
@@ -192,13 +201,23 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Email & password required" });
 
     const user = await User.findOne({ email }).select("+password");
+
     if (!user)
       return res.status(401).json({ message: "Invalid credentials" });
 
     const isMatch = await user.matchPassword(password);
+
     if (!isMatch)
       return res.status(401).json({ message: "Invalid credentials" });
 
+    // ✅ ADD HERE (IMPORTANT)
+    if (user.role === "teacher" && !user.isApproved) {
+      return res.status(403).json({
+        message: "Your account is pending admin approval",
+      });
+    }
+
+    // ✅ THEN GENERATE TOKEN
     const token = generateToken(user._id, user.role);
 
     res.status(200).json({
@@ -212,6 +231,7 @@ export const login = async (req, res) => {
         role: user.role,
       },
     });
+
   } catch (err) {
     console.error("Login Error:", err);
     res.status(500).json({ message: "Internal Server Error" });

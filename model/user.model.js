@@ -23,9 +23,16 @@ const userSchema = new mongoose.Schema(
     },
 
     role: {
-      type: String,
-      enum: ["student", "teacher"],
-      default: "student",
+  type: String,
+  enum: ["student", "teacher", "admin"], 
+  default: "student",
+},
+
+    isApproved: {
+      type: Boolean,
+      default: function () {
+        return this.role === "teacher" ? false : true;
+      },
     },
 
     isEmailVerified: {
