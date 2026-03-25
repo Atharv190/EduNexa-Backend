@@ -31,11 +31,18 @@ const fileSchema = new mongoose.Schema(
     },
 
     summary: {
-      title: String,
-      overview: String,
-      keyPoints: [String],
-      importantTerms: [String],
-      conclusion: String,
+       title: String,
+  overview: String,
+  keyPoints: [String],
+  importantTerms: [String],
+  subtopics: [
+    {
+      name: String,
+      description: String,
+    },
+  ],
+  possibleQuestions: [String],
+  conclusion: String,
     },
     quiz: [
       {

@@ -1,8 +1,4 @@
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-import * as pdfParsePkg from "pdf-parse";
-const pdfParse = pdfParsePkg.default || pdfParsePkg;
-
+import pdfParse from "pdf-parse/lib/pdf-parse.js";
 import File from "../model/file.model.js";
 import cloudinary from "../config/cloud.js";
 import streamifier from "streamifier";

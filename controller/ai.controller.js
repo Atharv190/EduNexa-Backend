@@ -59,20 +59,52 @@ export const generateSummary = async (req, res) => {
     const pdfBytes = await fetchPdfBytes(file.fileUrl);
 
     const prompt = `
-You are an expert teacher.
+You are an expert academic teacher.
 
-Summarize the given study material in STRICT JSON format.
-Do not add explanations outside JSON.
-Do not use markdown.
+Analyze the given study material and generate a HIGH-QUALITY structured summary.
 
-JSON structure:
+STRICT RULES:
+- Output ONLY valid JSON
+- No markdown, no explanations, no extra text
+- Ensure JSON is clean and parseable
+- Use simple, student-friendly language
+
+JSON FORMAT:
 {
-  "title": "string",
-  "overview": "short paragraph",
-  "keyPoints": ["point1", "point2", "point3"],
-  "importantTerms": ["term1", "term2"],
-  "conclusion": "short conclusion"
+  "title": "Accurate topic/title",
+  "overview": "Detailed explanation (4-6 lines)",
+  "keyPoints": [
+    "Important concept explained clearly",
+    "Another key idea",
+    "Mechanism or definition",
+    "Critical takeaway"
+  ],
+  "importantTerms": [
+    "Term - short meaning"
+  ],
+  "subtopics": [
+    {
+      "name": "Subtopic name",
+      "description": "Short explanation"
+    }
+  ],
+  "possibleQuestions": [
+    "Exam-style question 1",
+    "Exam-style question 2"
+  ],
+  "conclusion": "Final understanding of topic"
 }
+
+IMPORTANT INSTRUCTIONS:
+- Generate ONLY 10 to 15 importantTerms (not more, not less)
+- Each term must have a clear short meaning
+- Do NOT repeat terms
+- keyPoints should be meaningful (not generic)
+- Include real concepts from content
+- Subtopics should reflect actual sections of the document
+- Questions should be useful for exams/interviews
+
+CONTENT:
 `;
 
     const response = await retryGemini(() =>
