@@ -39,7 +39,6 @@ export const sendSignupOTP = async (req, res) => {
       verified: false,
     });
 
-    // ✅ Send email with proper error handling
     await sendEmail({
   to: email,
   subject: `🔐 Verify Your Email - EduNexa`,
@@ -169,7 +168,7 @@ if (!allowedRoles.includes(role)) {
   email,
   password,
   role,
-  isApproved: role === "teacher" ? false : true, // 🔥 important
+  isApproved: role === "teacher" ? false : true, 
 });
 
     otpStore.delete(email);
@@ -210,14 +209,14 @@ export const login = async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ message: "Invalid credentials" });
 
-    // ✅ ADD HERE (IMPORTANT)
+    
     if (user.role === "teacher" && !user.isApproved) {
       return res.status(403).json({
         message: "Your account is pending admin approval",
       });
     }
 
-    // ✅ THEN GENERATE TOKEN
+    
     const token = generateToken(user._id, user.role);
 
     res.status(200).json({

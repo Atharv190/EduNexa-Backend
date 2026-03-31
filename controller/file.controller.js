@@ -206,12 +206,10 @@ export const downloadFile = async (req, res) => {
       return res.status(404).send("File not found");
     }
 
-    // Fetch file from Cloudinary
     const response = await axios.get(file.fileUrl, {
       responseType: "stream",
     });
 
-    // Extract filename from URL or fallback
     const filename =
       file.title?.replace(/\s+/g, "_") + ".pdf";
 
@@ -224,7 +222,6 @@ export const downloadFile = async (req, res) => {
       response.headers["content-type"]
     );
 
-    // Pipe file stream to browser
     response.data.pipe(res);
   } catch (error) {
     console.error("DOWNLOAD ERROR:", error.message);
